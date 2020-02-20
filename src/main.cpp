@@ -11,12 +11,14 @@ Desciption	: socket chat server main func
 
 int main() {
 	Member m("abcd","1234",55);
+	Member n("1234","5678",66);
 
 	m.SetId("abc");
 	m.SetPw("123");
 	m.SetFd(44);
 
 	cout << m.GetId() << m.GetPw() << m.GetFd() << endl;
+	cout << n.GetId() << n.GetPw() << n.GetFd() << endl;
 
 	return 0;
 }
