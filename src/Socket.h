@@ -25,6 +25,10 @@ const int MAX_RECV = 512;
 class Socket {
 public:
 	Socket();
+	Socket(const Socket &s) :
+			m_sock(s.m_sock), m_addr(s.m_addr) {
+	}
+	;
 	virtual ~Socket();
 
 	// 서버 init

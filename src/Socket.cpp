@@ -11,7 +11,6 @@
 Socket::Socket() :
 		m_sock(-1) {
 	memset(&m_addr, 0, sizeof(m_addr));
-
 }
 
 Socket::~Socket() {
@@ -29,7 +28,7 @@ bool Socket::create() {
 	// 생성 실패 시 -1
 
 	// 소켓 생성 실패하면 false 리턴
-	if (is_valid()) {
+	if (!is_valid()) {
 		return false;
 	}
 
@@ -65,9 +64,8 @@ bool Socket::bind(const int _port) {
 	 * int bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen);
 	 * sockaddr 구조체와 sockaddr_in 구조체의 차이에 대해서도 알고있자
 	 */
-	if (::bind(m_sock, (struct sockaddr*) &m_addr, sizeof(m_addr)) < 0) {
+	if (::bind(m_sock, (sockaddr*) &m_addr, sizeof(m_addr)) < 0) {
 		close(m_sock);
-		fprintf(stderr, "socket bind error: %s\n", strerror(errno));
 		return false;
 	} else {
 		return true;
@@ -94,7 +92,7 @@ bool Socket::listen() const {
 
 bool Socket::accept(Socket &new_socket) const {
 	int addr_size = sizeof(new_socket);
-	new_socket.m_sock = ::accept(m_sock, (struct sockaddr*) new_socket.m_addr,
+	new_socket.m_sock = ::accept(m_sock, (sockaddr*) &m_addr,
 			(socklen_t*) &addr_size);
 
 	if (new_socket.m_sock < 0) {
@@ -172,5 +170,5 @@ int Socket::recv(std::string &str) const {
 
 bool Socket::is_valid() const {
 	// 소켓이 생성 되어서 초기값(-1)이 아니면 true
-	return (m_sock == -1);
+	return (m_sock > -1) ? true : false;
 }

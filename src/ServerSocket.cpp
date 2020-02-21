@@ -7,22 +7,19 @@
 
 #include "ServerSocket.h"
 
-ServerSocket::ServerSocket(int port) {
+ServerSocket::ServerSocket(int _port) {
+
 	if(!Socket::create()){
 		throw SocketException("Server : Could not create socket.\n");
 	}
 
-	if(!Socket::bind(port)){
+	if(!Socket::bind(_port)){
 		throw SocketException("Server : Could not bind to socket.\n");
 	}
 
 	if(!Socket::listen()){
 		throw SocketException("Server : Could not listen to socket.\n");
 	}
-}
-
-ServerSocket::~ServerSocket() {
-
 }
 
 void ServerSocket::accept(ServerSocket &sock) {
