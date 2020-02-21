@@ -17,6 +17,8 @@
 #include <string>
 #include <arpa/inet.h>
 
+#include "SocketException.h"
+
 const int MAX_CONNECTIONS = 10;
 const int MAX_RECV = 512;
 

@@ -12,5 +12,6 @@ Desciption	: socket chat server main header
 #include <iostream>
 #include <string>
 #include "Member.h"
+#include "SocketException.h"
 
 const int BUF_SIZE = 256;
