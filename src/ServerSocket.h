@@ -16,6 +16,9 @@ public:
 	ServerSocket(){};
 	virtual ~ServerSocket(){};
 
+	const ServerSocket& operator << ( const std::string& s ) const;
+	const ServerSocket& operator >> ( std::string& s ) const;
+
 	void accept(ServerSocket&);
 private:
 };
