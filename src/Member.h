@@ -37,7 +37,7 @@ public:
 	int GetFd() const;
 	void SetFd(const int fd);
 
-	~Member() {};
+	virtual ~Member() {};
 
 private:
 	string mId;

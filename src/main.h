@@ -14,6 +14,3 @@ Desciption	: socket chat server main header
 #include "Member.h"
 
 const int BUF_SIZE = 256;
-const int MAX_CONNECTIONS = 5;
-
-using namespace std;
