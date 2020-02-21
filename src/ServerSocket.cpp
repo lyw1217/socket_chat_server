@@ -20,6 +20,8 @@ ServerSocket::ServerSocket(int _port) {
 	if(!Socket::listen()){
 		throw SocketException("Server : Could not listen to socket.\n");
 	}
+
+	fprintf(stdout, "Server : Listen...\n");
 }
 
 const ServerSocket& ServerSocket::operator << ( const std::string& s ) const

@@ -9,24 +9,24 @@ Desciption	: socket chat server Member class
 
 #include "Member.h"
 
-const string& Member::GetId() const
+const std::string& Member::GetId() const
 {
     return mId;
 }
-void Member::SetId(const string& id)
+void Member::SetId(const std::string& id)
 {
     mId = id;
-    cout << "" << id << " complete ID setup\n";
+    fprintf(stdout, "'%s' complete ID setup\n");
 }
 
-const string& Member::GetPw() const
+const std::string& Member::GetPw() const
 {
     return mPw;
 }
-void Member::SetPw(const string& pw)
+void Member::SetPw(const std::string& pw)
 {
     mPw = pw;
-    cout << "" << pw << " complete Password setup\n";
+    fprintf(stdout, "complete Password setup\n");
 }
 
 int Member::GetFd() const
@@ -36,5 +36,5 @@ int Member::GetFd() const
 void Member::SetFd(const int fd)
 {
     mFd = fd;
-    cout << "" << fd << " complete File Descriptor setup\n";
+    fprintf(stdout, "'%d' complete File Descriptor setup\n", fd);
 }

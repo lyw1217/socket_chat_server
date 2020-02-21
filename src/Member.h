@@ -12,27 +12,25 @@ Desciption	: socket chat server Member class header
 #include <iostream>
 #include <string>
 
-using namespace std;
-
 constexpr int MAX_USER_LEN = 20;
 
 class Member
 {
 public:
-	Member(string id, string pw, int fd)
+	Member(std::string id, std::string pw, int fd)
 		: mId(id), mPw(pw), mFd(fd) 
 	{
-		cout << "member " << id << " complete setup\n";
+		fprintf(stdout, "member %s complete setup\n", id);
 	};
 
 	Member(const Member& m)
 		:mId(m.mId), mPw(m.mPw), mFd(m.mFd) {};
 
-	const string& GetId() const;
-	void SetId(const string& id);
+	const std::string& GetId() const;
+	void SetId(const std::string& id);
 
-	const string& GetPw() const;
-	void SetPw(const string& pw);
+	const std::string& GetPw() const;
+	void SetPw(const std::string& pw);
 
 	int GetFd() const;
 	void SetFd(const int fd);
@@ -40,7 +38,7 @@ public:
 	virtual ~Member() {};
 
 private:
-	string mId;
-	string mPw;
+	std::string mId;
+	std::string mPw;
 	int mFd;
 };
