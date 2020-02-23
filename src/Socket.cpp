@@ -20,6 +20,14 @@ Socket::~Socket() {
 	}
 }
 
+char* Socket::GetAddr() const{
+		char addr_Temp[IP_ADDR_SIZE + 1];
+		// IPv4 와 IPv6 주소를 binary 형태에서 사람이 알아보기 쉬운 텍스트(human-readable text)형태로 전환해준다.
+		inet_ntop(AF_INET, &m_addr.sin_addr.s_addr, addr_Temp, sizeof(addr_Temp));
+
+		return addr_Temp;
+};
+
 // 서버 init
 bool Socket::create() {
 	m_sock = socket(AF_INET, SOCK_STREAM, 0);

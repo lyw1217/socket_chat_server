@@ -19,8 +19,9 @@
 
 #include "SocketException.h"
 
-const int MAX_CONNECTIONS = 10;
+const int MAX_CONNECTIONS = 50;
 const int MAX_RECV = 512;
+const int IP_ADDR_SIZE = 20;
 
 class Socket {
 public:
@@ -31,20 +32,25 @@ public:
 	;
 	virtual ~Socket();
 
-	// 서버 init
+	int GetFd() const {
+		return m_sock;
+	};
+	char* GetAddr() const;
+
+// 서버 init
 	bool create();					// 소켓 생성
 	bool bind(const int port);	// IP/PORT
 	bool listen() const;			// 요청 대기
 	bool accept(Socket&) const;	// 수락
 
-	// 클라이언트 init
+// 클라이언트 init
 	bool connect(const std::string host_ip, const int port);
 
-	// 데이터 송수신
+// 데이터 송수신
 	bool send(const std::string) const;
 	int recv(std::string&) const;
 
-	// 소켓 생성 여부 확인
+// 소켓 생성 여부 확인
 	bool is_valid() const;
 
 private:

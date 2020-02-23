@@ -11,8 +11,12 @@
 #include <string>
 #include "Member.h"
 #include "ServerSocket.h"
+#include "Epoll.h"
 
 int main(int argc, char *argv[]) {
+	int client_fd[MAX_CONNECTIONS] = { 0, };
+	int client_index = 0;
+
 	fprintf(stdout, "Server Init...\n");
 
 	if (argc != 2) {
@@ -27,20 +31,39 @@ int main(int argc, char *argv[]) {
 	try {
 		// Create server socket
 		ServerSocket server_sock(atoi(argv[1]));
+		Epoll epoll(server_sock.GetFd());
+
 		while (true) {
 
-			ServerSocket client_sock;
-			server_sock.accept(client_sock);
-
-			try {
-				while (true) {
-					std::string data;
-					client_sock >> data;
-					client_sock << data;
-				}
-			} catch (SocketException&) {
+			if (!epoll.Epoll_Wait()) {
+				throw SocketException("epoll_wait() error\n");
 			}
 
+			for (int i = 0; i < epoll.GetEventCnt(); i++) {
+				if (epoll.GetEventFd(i) == server_sock.GetFd()) {
+					ServerSocket client_sock;
+					server_sock.accept(client_sock);
+					epoll.Epoll_Ctl(client_sock);
+
+					fprintf(stdout, "Server : Connected Client: %d, IP : %s\n",
+							client_sock.GetFd(), client_sock.GetAddr());
+
+					// 클라이언트 파일 디스크립터 번호 저장 및 예외처리
+					int time_out = 0;
+					while(client_fd[client_index] != 0){
+						client_index++;
+						if(client_index >= MAX_CONNECTIONS)
+							client_index = 0;
+						time_out++;
+						if(time_out >= (MAX_CONNECTIONS * 2)){
+							throw SocketException("Server : Client Index is Full!\n");
+						}
+					}
+					client_fd[client_index] = client_sock.GetFd();
+				}else{
+
+				}
+			}
 		}
 
 	} catch (SocketException &e) {
