@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
 	try {
 		// Create server socket
 		ServerSocket server_sock(atoi(argv[1]));
-		Epoll epoll(server_sock.GetFd());
+		Epoll epoll(server_sock.GetSocketFd());
 
 		while (true) {
 
@@ -40,13 +40,13 @@ int main(int argc, char *argv[]) {
 			}
 
 			for (int i = 0; i < epoll.GetEventCnt(); i++) {
-				if (epoll.GetEventFd(i) == server_sock.GetFd()) {
+				if (epoll.GetEventFd(i) == server_sock.GetSocketFd()) {
 					ServerSocket client_sock;
 					server_sock.accept(client_sock);
 					epoll.Epoll_Ctl(client_sock);
 
 					fprintf(stdout, "Server : Connected Client: %d, IP : %s\n",
-							client_sock.GetFd(), client_sock.GetAddr());
+							client_sock.GetSocketFd(), client_sock.GetSocketAddr());
 
 					// 클라이언트 파일 디스크립터 번호 저장 및 예외처리
 					int time_out = 0;
@@ -59,7 +59,7 @@ int main(int argc, char *argv[]) {
 							throw SocketException("Server : Client Index is Full!\n");
 						}
 					}
-					client_fd[client_index] = client_sock.GetFd();
+					client_fd[client_index] = client_sock.GetSocketFd();
 				}else{
 
 				}

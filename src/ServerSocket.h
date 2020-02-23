@@ -15,8 +15,8 @@ public:
 	ServerSocket(int port);
 	ServerSocket(){};
 	virtual ~ServerSocket(){};
-	int GetFd() {return Socket::GetFd();};
-	char* GetAddr() {return Socket::GetAddr();};
+	int GetSocketFd() const {return Socket::GetFd();};
+	char* GetSocketAddr() const {return Socket::GetAddr();};
 
 	const ServerSocket& operator << ( const std::string& s ) const;
 	const ServerSocket& operator >> ( std::string& s ) const;

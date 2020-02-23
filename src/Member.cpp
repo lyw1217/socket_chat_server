@@ -29,12 +29,12 @@ void Member::SetPw(const std::string& pw)
     fprintf(stdout, "complete Password setup\n");
 }
 
-int Member::GetFd() const
+int Member::GetMemberSocket() const
 {
-    return mFd;
+    return this->msocket.GetSocketFd();
 }
-void Member::SetFd(const int fd)
+void Member::SetSocket(ServerSocket& _socket)
 {
-    mFd = fd;
-    fprintf(stdout, "'%d' complete File Descriptor setup\n", fd);
+    msocket = _socket;
+    fprintf(stdout, "'%d' complete File Descriptor setup\n", msocket.GetSocketFd());
 }

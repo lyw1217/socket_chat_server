@@ -51,11 +51,11 @@ int Epoll::GetEventFd(int i) const{
 
 bool Epoll::Epoll_Ctl(ServerSocket& socket) {
 	m_event.events = EPOLLIN;
-	m_event.data.fd = socket.GetFd();
+	m_event.data.fd = socket.GetSocketFd();
 
 	// 파일 디스크립터(server_sock)를 epoll 인스턴스에 등록한다
 	// 관찰 대상의 관찰 이벤트 유형은 EPOLLIN
-	if (::epoll_ctl(m_epfd, EPOLL_CTL_ADD, socket.GetFd(), &m_event) == -1) {
+	if (::epoll_ctl(m_epfd, EPOLL_CTL_ADD, socket.GetSocketFd(), &m_event) == -1) {
 		throw SocketException("Server : epoll_ctl() error\n");
 		return false;
 	}
