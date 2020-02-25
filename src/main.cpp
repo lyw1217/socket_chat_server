@@ -31,6 +31,19 @@ int main(int argc, char *argv[]) {
 	try {
 		// Create server socket
 		ServerSocket server_sock(atoi(argv[1]));
+
+		while(true){
+			ServerSocket new_sock;
+			server_sock.accept(new_sock);
+			try{
+				while(true){
+					std::string data;
+					new_sock >> data;
+					new_sock << data;
+				}
+			}catch(SocketException&){}
+		}
+		/*
 		Epoll epoll(server_sock.GetSocketFd());
 
 		while (true) {
@@ -65,6 +78,7 @@ int main(int argc, char *argv[]) {
 				}
 			}
 		}
+		 */
 
 	} catch (SocketException &e) {
 		fprintf(stdout, "Exception was caught : %s\n", e.description());

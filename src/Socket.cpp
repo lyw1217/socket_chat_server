@@ -6,7 +6,6 @@
  */
 
 #include "Socket.h"
-#include <string.h> // memset()
 
 Socket::Socket() :
 		m_sock(-1) {
@@ -16,7 +15,7 @@ Socket::Socket() :
 Socket::~Socket() {
 	if (is_valid()) {
 		// close() -> 소켓 메모리 반환, file descriptor table 정리
-		close(m_sock);
+		::close(m_sock);
 	}
 }
 
@@ -48,14 +47,14 @@ bool Socket::create() {
 	 */
 	int opt = 1;
 	if (setsockopt(m_sock, SOL_SOCKET, SO_REUSEADDR, (const char*) &opt,
-			sizeof(opt)) < 0) {
+			sizeof(opt)) == -1) {
 		// SOL_SOCKET : 소켓 레벨에서 설정하는 옵션임을 명시
 		// SO_RESUEADDR : bind(2) 시에 local 주소를 재사용 할 것인지 여부
 		fprintf(stderr, "socket create error: %s\n", strerror(errno));
 		return false;
-	} else {
-		return true;	// 소켓 생성 완료
 	}
+
+	return true;	// 소켓 생성 완료
 }
 
 bool Socket::bind(const int _port) {
@@ -65,6 +64,7 @@ bool Socket::bind(const int _port) {
 
 	m_addr.sin_family = AF_INET;				// IP_v4
 	m_addr.sin_addr.s_addr = htonl(INADDR_ANY);	// INADDR_ANY 상수로 인해 자신의 ip값을 자동으로 할당
+	//m_addr.sin_addr.s_addr = INADDR_ANY;
 	m_addr.sin_port = htonl(_port);				// 매개변수로 받은 port를 포트로 설정
 
 	// 할당한 구조체를 가지고 소켓에 ip와 port를 묶는다
@@ -72,12 +72,13 @@ bool Socket::bind(const int _port) {
 	 * int bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen);
 	 * sockaddr 구조체와 sockaddr_in 구조체의 차이에 대해서도 알고있자
 	 */
-	if (::bind(m_sock, (sockaddr*) &m_addr, sizeof(m_addr)) < 0) {
+	int exe = ::bind(m_sock, (struct sockaddr*) &m_addr, sizeof(m_addr));
+	if (exe == -1) {
 		close(m_sock);
 		return false;
-	} else {
-		return true;
 	}
+
+	return true;
 }
 
 bool Socket::listen() const {
@@ -89,27 +90,28 @@ bool Socket::listen() const {
 	// 클라이언트가 listen()을 호출해 둔 서버 소켓을 목적지로 connect()를 호출
 	// (여기서 3-way 핸드쉐이크가 발생한다. 연결확인) , 성공시 0, 실패시 -1
 	// 시스템이 핸드쉐이크를 마친 후에는 서버 프로그램이 설정된 연결을 받아들이는 과정으로 accept()가 사용됨
-	if (::listen(m_sock, MAX_CONNECTIONS) < 0) {
+	int exe = ::listen(m_sock, MAX_CONNECTIONS);
+	if (exe == -1) {
 		close(m_sock);
 		fprintf(stderr, "socket listen error: %s\n", strerror(errno));
 		return false;
-	} else {
-		return true;
 	}
+
+	return true;
 }
 
 bool Socket::accept(Socket &new_socket) const {
-	int addr_size = sizeof(new_socket);
+	int addr_size = sizeof(m_addr);
 	new_socket.m_sock = ::accept(m_sock, (sockaddr*) &m_addr,
 			(socklen_t*) &addr_size);
 
-	if (new_socket.m_sock < 0) {
+	if (new_socket.m_sock <= 0) {
 		close(m_sock);
 		fprintf(stderr, "socket accept error: %s\n", strerror(errno));
 		return false;
-	} else {
-		return true;
 	}
+
+	return true;
 }
 
 // 클라이언트 init
@@ -180,3 +182,4 @@ bool Socket::is_valid() const {
 	// 소켓이 생성 되어서 초기값(-1)이 아니면 true
 	return (m_sock > -1) ? true : false;
 }
+

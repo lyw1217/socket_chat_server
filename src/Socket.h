@@ -16,6 +16,12 @@
 #include <unistd.h>
 #include <string>
 #include <arpa/inet.h>
+#include <errno.h>
+#include <string.h> // memset()
+
+#include <sys/types.h>
+#include <netinet/in.h>
+#include <netdb.h>
 
 #include "SocketException.h"
 
@@ -28,8 +34,7 @@ public:
 	Socket();
 	Socket(const Socket &s) :
 			m_sock(s.m_sock), m_addr(s.m_addr) {
-	}
-	;
+	};
 	virtual ~Socket();
 
 	int GetFd() const {
